@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:app_movies/provider/provider_movies.dart';
+
 import 'package:app_movies/utils/text_format.dart';
 
 import 'package:flutter/material.dart';
@@ -45,29 +46,50 @@ class _Carousel extends StatefulWidget {
 
 class _CarouselState extends State<_Carousel> {
   final _pageController = PageController(viewportFraction: 0.7);
+  String? primerPath;
+
+  @override
+  void initState() {
+    super.initState();
+    final provider = Provider.of<ProviderMovie>(context, listen: false);
+    provider.getPosterInitial().then((value) {
+      setState(() {
+        primerPath = value;
+      });
+    });
+  }
 
   int index = 0;
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     final provider = Provider.of<ProviderMovie>(context);
     final moviePopular = provider.moviesPopular;
+
     return AnimatedSwitcher(
         duration: const Duration(milliseconds: 300),
         child: Stack(
           children: [
-            Container(
-              width: double.infinity,
-              height: 500,
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                  fit: BoxFit.cover,
-                  image: NetworkImage('https://image.tmdb.org/t/p/w500' +
-                      moviePopular[index].posterPath!),
+            if (primerPath == null) Container(),
+            if (primerPath != null)
+              AnimatedSwitcher(
+                duration: const Duration(microseconds: 300),
+                child: SizedBox(
+                  width: double.infinity,
+                  height: 500,
+                  child: FadeInImage(
+                      fit: BoxFit.cover,
+                      placeholder: const AssetImage('assets/loading.gif'),
+                      image: NetworkImage(
+                          'https://image.tmdb.org/t/p/w500${moviePopular[index].posterPath}')),
                 ),
               ),
+            SizedBox(
+              width: double.infinity,
+              height: 500,
               child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 30.0, sigmaY: 30.0),
+                  filter: ImageFilter.blur(sigmaX: 20.0, sigmaY: 20.0),
                   child: Container(
                       width: 200.0,
                       height: 100.0,
