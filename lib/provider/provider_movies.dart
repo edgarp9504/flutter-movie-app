@@ -1,5 +1,5 @@
 import 'package:app_movies/model/model_movie.dart';
-import 'package:app_movies/model/model_popular.dart';
+import 'package:app_movies/model/model_api_movie.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 
@@ -8,15 +8,16 @@ class ProviderMovie extends ChangeNotifier {
   final _url = 'api.themoviedb.org';
   List<Movie> moviesPopular = [];
   List<Movie> moviesNowPlaying = [];
+  List<Movie> movieUpComing = [];
   int index = 0;
 
   String path = '';
 
   ProviderMovie() {
     getMoviePopular();
+    getMovieNowPlaying();
+    getMovieUpcoming();
   }
-
-  getPathPoster(int index) async {}
 
   Future<String> getPosterInitial() async {
     final url = Uri.https(_url, '3/movie/popular',
@@ -28,7 +29,7 @@ class ProviderMovie extends ChangeNotifier {
     return popularMovies.results[0].posterPath!;
   }
 
-  Future<List<Movie>> getMoviePopular() async {
+  getMoviePopular() async {
     try {
       final url = Uri.https(_url, '3/movie/popular',
           {'api_key': _key, 'language': 'es-MX', 'page': '1'});
@@ -43,18 +44,32 @@ class ProviderMovie extends ChangeNotifier {
     }
   }
 
-  Future<List<Movie>> getMovieNowPlaying() async {
+  getMovieNowPlaying() async {
     try {
       final url = Uri.https(_url, '3/movie/now_playing',
           {'api_key': _key, 'language': 'es-MX', 'page': '1'});
 
       final respJson = await http.get(url);
-      final popularMovies = ModelPopular.fromJson(respJson.body);
-      moviesPopular = popularMovies.results;
+
+      final playingMovie = ModelPopular.fromJson(respJson.body);
+      moviesNowPlaying = playingMovie.results;
       notifyListeners();
-      return popularMovies.results;
+      return playingMovie.results;
     } catch (e) {
       throw 'error al cargar las peliculas Playing Now';
+    }
+  }
+
+  getMovieUpcoming() async {
+    try {
+      final url = Uri.https(_url, '3/movie/upcoming',
+          {'api_key': _key, 'language': 'es-MX', 'page': '1'});
+      final respJson = await http.get(url);
+      final upcomingMovie = ModelPopular.fromJson(respJson.body);
+      movieUpComing = upcomingMovie.results;
+      notifyListeners();
+    } catch (e) {
+      throw 'error al cargar las peliculas Upcoming';
     }
   }
 }

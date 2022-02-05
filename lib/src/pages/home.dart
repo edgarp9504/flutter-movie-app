@@ -1,12 +1,13 @@
 import 'dart:ui';
-
-import 'package:app_movies/provider/provider_movies.dart';
-
+import 'package:app_movies/src/widget/card_list.dart';
 import 'package:app_movies/utils/text_format.dart';
-
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
 import 'package:provider/provider.dart';
+
+import 'package:app_movies/provider/provider_movies.dart';
+import 'package:app_movies/src/widget/carousel_movies.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -18,22 +19,78 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
+    //Provider
+    final provider = Provider.of<ProviderMovie>(context);
+
     return Scaffold(
         backgroundColor: Colors.black,
         body: SingleChildScrollView(
-            child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const _Carousel(),
+            child: Padding(
+          padding: const EdgeInsets.only(left: 10.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const _Carousel(),
 
-            //Peliculas populares
-            const _PopularMovies(),
-            const _PopularMovies(),
-            Column(
-              children: [Text('Tv Populares')],
-            ),
-          ],
+              //Popular Movies
+              CarouselMovies(
+                listMovie: provider.moviesPopular,
+                tittle1: 'Peliculas ',
+                tittle2: 'populares',
+              ),
+
+              // Upcoming movies
+              CarouselMovies(
+                listMovie: provider.movieUpComing,
+                tittle1: 'Peliculas ',
+                tittle2: 'proximas',
+              ),
+
+              //TV Popular
+              const _TVPopular(),
+            ],
+          ),
         )));
+  }
+}
+
+class _TVPopular extends StatelessWidget {
+  const _TVPopular({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 5),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          RichText(
+            text: TextSpan(children: [
+              TextSpan(
+                  text: 'TV ',
+                  style: GoogleFonts.dongle(
+                      fontSize: sizeTitle1, fontWeight: FontWeight.bold)),
+              TextSpan(
+                  text: 'populares',
+                  style: GoogleFonts.dongle(
+                      fontSize: sizeTitle1, fontWeight: FontWeight.w300)),
+            ]),
+          ),
+          const CardList(),
+          //2
+          const Padding(
+            padding: EdgeInsets.only(top: 20.0),
+            child: CardList(),
+          ),
+          const Padding(
+            padding: EdgeInsets.only(top: 20.0),
+            child: CardList(),
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -133,8 +190,7 @@ class _CarouselState extends State<_Carousel> {
                           fit: BoxFit.cover,
                           placeholder: const AssetImage('assets/loading.gif'),
                           image: NetworkImage(
-                              'https://image.tmdb.org/t/p/w500' +
-                                  movie.posterPath!)),
+                              'https://image.tmdb.org/t/p/w500${movie.posterPath!}')),
                     ),
                   );
                 },
@@ -142,57 +198,5 @@ class _CarouselState extends State<_Carousel> {
             ),
           ],
         ));
-  }
-}
-
-class _PopularMovies extends StatelessWidget {
-  const _PopularMovies({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: Colors.black,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 10.0),
-            child: RichText(
-              text: TextSpan(children: [
-                TextSpan(
-                    text: 'Peliculas ',
-                    style: GoogleFonts.dongle(
-                        fontSize: sizeTitle1, fontWeight: FontWeight.bold)),
-                TextSpan(
-                    text: 'populares',
-                    style: GoogleFonts.dongle(
-                        fontSize: sizeTitle1, fontWeight: FontWeight.w300)),
-              ]),
-            ),
-          ),
-          SizedBox(
-            height: 200,
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: 5,
-              itemBuilder: (context, index) {
-                return Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Container(
-                    width: 180,
-                    height: 50,
-                    decoration: BoxDecoration(
-                        color: Colors.green,
-                        borderRadius: BorderRadius.circular(10)),
-                  ),
-                );
-              },
-            ),
-          )
-        ],
-      ),
-    );
   }
 }

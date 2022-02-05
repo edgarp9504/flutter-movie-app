@@ -21,12 +21,14 @@ class AppProvider extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => ProviderMovie(), lazy: false),
         ChangeNotifierProvider(create: (_) => ProviderTV(), lazy: false),
       ],
-      child: MyApp(),
+      child: const MyApp(),
     );
   }
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
