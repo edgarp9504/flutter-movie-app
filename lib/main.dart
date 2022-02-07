@@ -1,8 +1,9 @@
+import 'package:app_movies/provider/ui_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'package:app_movies/provider/provider_movies.dart';
-import 'package:app_movies/provider/tv_movies.dart';
+import 'package:app_movies/provider/movies_provider.dart';
+import 'package:app_movies/provider/tv_provider.dart';
 
 import 'package:app_movies/src/pages/home.dart';
 import 'package:app_movies/src/pages/movie_detail.dart';
@@ -19,7 +20,8 @@ class AppProvider extends StatelessWidget {
       providers: [
         // Initial Provider
         ChangeNotifierProvider(create: (_) => ProviderMovie(), lazy: false),
-        ChangeNotifierProvider(create: (_) => ProviderTV(), lazy: false),
+        ChangeNotifierProvider(create: (_) => TvProvider(), lazy: false),
+        ChangeNotifierProvider(create: (_) => UIProvider(), lazy: false),
       ],
       child: const MyApp(),
     );
@@ -36,7 +38,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       initialRoute: '/',
       routes: {
-        '/': (_) => const HomePage(),
+        '/': (_) => Home(),
         'movie-details': (_) => const MovieDetailsPages(),
         'tv-details': (_) => const TvDetailsPages(),
       },

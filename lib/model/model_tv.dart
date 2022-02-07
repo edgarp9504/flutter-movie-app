@@ -2,13 +2,13 @@ import 'dart:convert';
 
 class TV {
   TV({
-    required this.posterPath,
+    this.posterPath,
     required this.popularity,
     required this.id,
-    required this.backdropPath,
+    this.backdropPath,
     required this.voteAverage,
     required this.overview,
-    required this.firstAirDate,
+    this.firstAirDate,
     required this.originCountry,
     required this.genreIds,
     required this.originalLanguage,
@@ -17,14 +17,14 @@ class TV {
     required this.originalName,
   });
 
-  String posterPath;
+  String? posterPath;
   double popularity;
   int id;
-  String backdropPath;
+  String? backdropPath;
   double voteAverage;
   String overview;
-  DateTime firstAirDate;
-  String originCountry;
+  DateTime? firstAirDate;
+  List<String> originCountry;
   List<int> genreIds;
   String originalLanguage;
   int voteCount;
@@ -41,7 +41,7 @@ class TV {
         voteAverage: json["vote_average"].toDouble(),
         overview: json["overview"],
         firstAirDate: DateTime.parse(json["first_air_date"]),
-        originCountry: json["origin_country"],
+        originCountry: List<String>.from(json["origin_country"].map((x) => x)),
         genreIds: List<int>.from(json["genre_ids"].map((x) => x)),
         originalLanguage: json["original_language"],
         voteCount: json["vote_count"],

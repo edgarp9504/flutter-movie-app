@@ -9,7 +9,7 @@ class ProviderMovie extends ChangeNotifier {
   List<Movie> moviesPopular = [];
   List<Movie> moviesNowPlaying = [];
   List<Movie> movieUpComing = [];
-  int index = 0;
+  int _index = 2;
 
   String path = '';
 
@@ -17,6 +17,13 @@ class ProviderMovie extends ChangeNotifier {
     getMoviePopular();
     getMovieNowPlaying();
     getMovieUpcoming();
+  }
+
+  int get selectTapMenu => _index;
+
+  set selectTapMenu(int i) {
+    _index = i;
+    notifyListeners();
   }
 
   Future<String> getPosterInitial() async {
