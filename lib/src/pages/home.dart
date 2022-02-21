@@ -19,7 +19,7 @@ class Home extends StatelessWidget {
     return Scaffold(
         bottomNavigationBar: bottomNavigatorDecoration(uiProvider),
         backgroundColor: Colors.black,
-        body: _HomePages());
+        body: const _HomePages());
   }
 
   BottomNavigationBar bottomNavigatorDecoration(UIProvider provider) {

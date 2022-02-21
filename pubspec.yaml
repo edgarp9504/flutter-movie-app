@@ -30,11 +30,15 @@ dependencies:
   card_swiper: ^2.0.1
   carousel_slider: ^4.0.0
   cupertino_icons: ^1.0.2
+  fijkplayer: ^0.10.1
   flutter:
     sdk: flutter
   google_fonts: ^2.2.0
   http: ^0.13.4
   provider: ^6.0.2
+  url_launcher: ^6.0.20
+  youtube_player_flutter: ^8.0.0
+
 
 dev_dependencies:
   flutter_lints: ^1.0.0

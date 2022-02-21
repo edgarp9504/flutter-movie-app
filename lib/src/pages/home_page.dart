@@ -1,5 +1,7 @@
 import 'dart:ui';
 
+import 'package:app_movies/provider/ui_provider.dart';
+import 'package:app_movies/src/pages/movie_detail.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +11,7 @@ import 'package:app_movies/provider/tv_provider.dart';
 
 import 'package:app_movies/model/model_tv.dart';
 
-import 'package:app_movies/src/widget/card_list.dart';
+import 'package:app_movies/src/widget/card_list_tv.dart';
 import 'package:app_movies/src/widget/carousel_movies.dart';
 
 import 'package:app_movies/utils/text_format.dart';
@@ -28,11 +30,12 @@ class HomePage extends StatelessWidget {
         children: [
           const _Carousel(),
 
-          //Popular Movies
+          //Popular nowplayingmovies
           CarouselMovies(
-            listMovie: movieProvider.moviesPopular,
+            listMovie: movieProvider.moviesNowPlaying,
             tittle1: 'Peliculas ',
-            tittle2: 'populares',
+            tittle2: 'estrenos',
+            index: 2,
           ),
 
           // Upcoming movies
@@ -81,21 +84,36 @@ class _TVPopularState extends State<_TVPopular> {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 5),
+      padding: const EdgeInsets.symmetric(horizontal: 5),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          RichText(
-            text: TextSpan(children: [
-              TextSpan(
-                  text: 'TV ',
-                  style: GoogleFonts.dongle(
-                      fontSize: sizeTitle1, fontWeight: FontWeight.bold)),
-              TextSpan(
-                  text: 'populares',
-                  style: GoogleFonts.dongle(
-                      fontSize: sizeTitle1, fontWeight: FontWeight.w300)),
-            ]),
+          Row(
+            children: [
+              RichText(
+                text: TextSpan(children: [
+                  TextSpan(
+                      text: 'TV ',
+                      style: GoogleFonts.dongle(
+                          fontSize: sizeTitle1, fontWeight: FontWeight.bold)),
+                  TextSpan(
+                      text: 'populares',
+                      style: GoogleFonts.dongle(
+                          fontSize: sizeTitle1, fontWeight: FontWeight.w300)),
+                ]),
+              ),
+              const Spacer(),
+              InkWell(
+                  onTap: () {
+                    final uiProvider =
+                        Provider.of<UIProvider>(context, listen: false);
+                    uiProvider.selectOnTap = 1;
+                  },
+                  child: Text(
+                    'ver más',
+                    style: TextStyle(color: Colors.red[400]),
+                  ))
+            ],
           ),
 
           if (tvTop1 == null) Container(),
@@ -202,17 +220,36 @@ class _CarouselState extends State<_Carousel> {
                 itemCount: moviePopular.length,
                 itemBuilder: (context, index) {
                   final movie = moviePopular[index];
+                  final idmovie = '${moviePopular[index].id.toString()}P';
 
                   return Container(
                     margin: const EdgeInsets.only(
                         top: 80, bottom: 80, left: 15, right: 15),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(20),
-                      child: FadeInImage(
-                          fit: BoxFit.cover,
-                          placeholder: const AssetImage('assets/loading.gif'),
-                          image: NetworkImage(
-                              'https://image.tmdb.org/t/p/w500${movie.posterPath!}')),
+                      child: Hero(
+                        tag: idmovie,
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                PageRouteBuilder(
+                                    settings: RouteSettings(arguments: movie),
+                                    transitionDuration:
+                                        const Duration(milliseconds: 900),
+                                    pageBuilder: (_, __, ___) =>
+                                        MovieDetailsPages(
+                                            idMovie: idmovie,
+                                            id: movie.id.toString())));
+                          },
+                          child: FadeInImage(
+                              fit: BoxFit.cover,
+                              placeholder:
+                                  const AssetImage('assets/loading.gif'),
+                              image: NetworkImage(
+                                  'https://image.tmdb.org/t/p/w500${movie.posterPath!}')),
+                        ),
+                      ),
                     ),
                   );
                 },
