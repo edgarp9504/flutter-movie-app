@@ -1,4 +1,4 @@
-# app_movies
+# Movie app
 
 A new Flutter project.
 
