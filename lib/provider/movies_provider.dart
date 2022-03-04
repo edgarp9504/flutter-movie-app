@@ -1,6 +1,7 @@
 import 'package:app_movies/model/model_credits.dart';
 import 'package:app_movies/model/model_movie.dart';
 import 'package:app_movies/model/model_api_movie.dart';
+import 'package:app_movies/model/model_movie_details.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 
@@ -12,7 +13,8 @@ class ProviderMovie extends ChangeNotifier {
   List<Movie> moviesPopular = [];
   List<Movie> moviesNowPlaying = [];
   List<Movie> movieUpComing = [];
-  List movieCredits = [];
+  ModelMovieDetails? movieDetail;
+
   int _index = 2;
 
   //isBool
@@ -33,26 +35,21 @@ class ProviderMovie extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<String> getPosterInitial() async {
-    final url = Uri.https(_url, '3/movie/popular',
-        {'api_key': _key, 'language': 'es-MX', 'page': '1'});
-
-    final respJson = await http.get(url);
-    final popularMovies = ModelPopular.fromJson(respJson.body);
-
-    return popularMovies.results[0].posterPath!;
-  }
-
   getMoviePopular() async {
     try {
+      isBool = true;
+      notifyListeners();
+
       final url = Uri.https(_url, '3/movie/popular',
           {'api_key': _key, 'language': 'es-MX', 'page': '1'});
 
       final respJson = await http.get(url);
       final popularMovies = ModelPopular.fromJson(respJson.body);
       moviesPopular = popularMovies.results;
+      isBool = false;
+
       notifyListeners();
-      print(moviesPopular[0].id);
+
       return popularMovies.results;
     } catch (e) {
       throw 'error al cargar las peliculas';
@@ -88,13 +85,29 @@ class ProviderMovie extends ChangeNotifier {
     }
   }
 
+  Future<ModelMovieDetails> getMovieDetails(String id) async {
+    try {
+      final url = Uri.https(
+          _url, '3/movie/$id', {'api_key': _key, 'language': 'en-US'});
+      final respJson = await http.get(url);
+      final detailModel = ModelMovieDetails.fromJson(respJson.body);
+      movieDetail = detailModel;
+
+      //print(detailModel);
+      notifyListeners();
+      return detailModel;
+    } catch (e) {
+      throw 'error al cargar detalle';
+    }
+  }
+
   Future<List<Cast>> getMovieCast(String id) async {
     try {
       final url = Uri.https(_url, '3/movie/$id/credits',
           {'api_key': _key, 'language': 'es-MX', 'page': '1'});
       final respJson = await http.get(url);
       final movieCast = CreditsResponse.fromJson(respJson.body);
-
+      //print(movieCast);
       notifyListeners();
       return movieCast.cast;
     } catch (e) {

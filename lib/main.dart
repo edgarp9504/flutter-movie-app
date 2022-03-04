@@ -1,6 +1,6 @@
 import 'package:app_movies/provider/ui_provider.dart';
+import 'package:app_movies/src/pages/carousel.dart';
 import 'package:app_movies/src/pages/tv_pages.dart';
-import 'package:app_movies/src/widget/test.dart';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -10,7 +10,6 @@ import 'package:app_movies/provider/tv_provider.dart';
 
 import 'package:app_movies/src/pages/home.dart';
 //import 'package:app_movies/src/pages/movie_detail.dart';
-import 'package:app_movies/src/pages/tv_details.dart';
 
 void main() => runApp(const AppProvider());
 
@@ -39,11 +38,11 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: '',
       debugShowCheckedModeBanner: false,
-      initialRoute: 'tv-test',
+      initialRoute: '/',
       routes: {
         '/': (_) => const Home(),
         //'movie-details': (_) => const MovieDetailsPages(),
-        'tv-details': (_) => const TvDetailsPages(),
+        'carousel': (_) => const CarouselWidget(),
         //'tv-test': (_) => const VideoScreen(),
         //'url-launcher': (_) => const MyHomePage()
         'tv-popular': (_) => const TvPages(),
